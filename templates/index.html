@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SW2.5 ココフォリア用 魔物管理ツール</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script type="text/javascript" src="/static/js/script.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>魔物データベース</h1>
+        </div>
+
+        <!-- タブ関連の部分 -->
+        <div class="tabs">
+            <button class="tablinks" onclick="openTab(event, 'search')" id="defaultOpen">検索</button>
+            <button class="tablinks" onclick="openTab(event, 'register')">登録</button>
+            <button class="tablinks" onclick="openTab(event, 'setting')" id="defaultSetting">設定</button>
+        </div>
+
+        <!-- 魔物検索 -->
+        <div id="search" class="tabcontent">
+            <h1>魔物検索</h1>
+            <p>
+                名称・分類・レベル・部位数の項目から魔物データを絞り込めます<br>
+                PC人数・コマの大きさ・チャットカラーによってコマの設定を行えます<br>
+                剣のかけらは生命・精神抵抗力への補正は自動計算されますが、HP・MPは適用されません<br>
+                コマは5部位から2つ、9部位から3つに分かれるので対応するコピーボタンを押してください
+            </p>
+            <h2>検索設定</h2>
+            <div>
+                <table id="formTable">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table id="searchTable1">
+                                    <tbody>
+                                        <tr>
+                                            <th>名称</th>
+                                            <td colspan="5"><input type="text" id="searchName" value=""></td>
+                                        </tr>
+                                        <tr>
+                                            <th>分類</th>
+                                            <td>
+                                                <select id="searchCategory"></select>
+                                            </td>
+                                            <th>レベル</th>
+                                            <td>
+                                                <select id="searchLevel"></select>
+                                            </td>
+                                            <th>部位数</th>
+                                            <td>
+                                                <select id="searchPartNum"></select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <table id="partyTable">
+                                    <tbody>
+                                        <tr>
+                                            <th>PC人数</th>
+                                            <td><input type="number" id="PartyNum" value="1" min="1"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>コマの大きさ</th>
+                                            <td><input type="number" id="CharaSize" value="4" min="1"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>チャットカラー</th>
+                                            <td><input type="color" id="ChatColor" value="#ff0000"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h2>検索結果</h2>
+            <div id="swordForm">
+                <table id="searchTable3">
+                    <tbody>
+                        <tr>
+                            <th>剣のかけら</th>
+                            <td>
+                                <input type="checkbox" id="Sword-fragment-checkbox" value="true">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="searchResult">
+                <table id="searchTable2">
+                    <thead>
+                        <tr>
+                            <th>分類</th>
+                            <th>レベル</th>
+                            <th>名称</th>
+                            <th>部位数</th>
+                            <th>コピー</th>
+                            <th>削除</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <p id="noDataMessage" style="display: none;">データはありません</p>
+            </div>
+        </div>
+
+        <!-- 魔物登録 -->
+        <div id="register" class="tabcontent">
+            <h1>魔物登録</h1>
+            <p>
+                魔物データの登録を行えます<br>
+                攻撃方法（部位）のみ書式が定まっています<br>
+                名前・分類・特殊能力の組み合わせが全く同じキャラクターの登録は非推奨です<br>
+                プルダウンの項目が不足した場合は、設定から追加してください
+            </p>
+            <div id="registerForm1">
+                <table id="registerTable1">
+                    <tbody>
+                        <tr>
+                            <th>レベル</th>
+                            <td colspan="1"><input type="number" id="registerLevel" value="0" min="0"></td>
+                            <th>名称</th>
+                            <td colspan="2"><input type="text" id="registerName" value=""></td>
+                        </tr>
+                        <tr>
+                            <th>分類</th>
+                            <td colspan="1">
+                                <select id="registerCategory">
+                                    <option value="">未分類</option>
+                                </select>
+                            </td>
+                            <th>参照</th>
+                            <td colspan="2">
+                                <select id="registerRefe">
+                                    <option value="-">-</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>弱点</th>
+                            <td colspan="1">
+                                <select id="registerWeak">
+                                    <option value="なし">なし</option>
+                                </select>
+                            </td>
+                            <th colspan="2">知名度／弱点値</th>
+                            <td colspan="1">
+                                <input type="number" id="registerRepu1" value="0" min="0">／
+                                <input type="number" id="registerRepu2" value="0" min="0">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>先制値</th>
+                            <td>
+                                <input type="number" id="registerInit" value="0" min="0">
+                            </td>
+                            <th colspan="2">生命抵抗力／精神抵抗力</th>
+                            <td colspan="1">
+                                <input type="number" id="registerVitResi" value="0" min="0">／
+                                <input type="number" id="registerMndResi" value="0" min="0">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>特殊能力</th>
+                            <td colspan="5">
+                                <textarea id="registerSkill" rows="20" placeholder="例：●毒・病気無効" wrap="soft"></textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="registerForm2">
+                <table id="registerTable2">
+                    <thead>
+                        <tr>
+                            <th>攻撃方法（部位）</th>
+                            <th>命中力</th>
+                            <th>打撃点</th>
+                            <th>回避力</th>
+                            <th>防護点</th>
+                            <th>HP</th>
+                            <th>MP</th>
+                            <th>コア</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" id="registerPart1Style" value="" placeholder="攻撃方法（部位）"></td>
+                            <td><input type="number" id="registerPart1Accuracy" value=0></td>
+                            <td><input type="number" id="registerPart1Damage" value=0></td>
+                            <td><input type="number" id="registerPart1Evasion" value=0></td>
+                            <td><input type="number" id="registerPart1Defense" value=0></td>
+                            <td><input type="number" id="registerPart1Hp" value=0></td>
+                            <td><input type="number" id="registerPart1Mp" value=0></td>
+                            <td></td>
+                            <td>
+                                <button class='clone-button' id="registerPart1Clone">複製</button>
+                                <button class='remove-button' id="registerPart1Remove">削除</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" id="registerData">データを登録</button>
+                <input type="hidden" id="registerPartNum" value="1">
+            </div>
+        </div>
+
+        <!-- 設定 -->
+        <div id="setting" class="tabcontent">
+            <h1>設定</h1>
+            <p>
+                プルダウンの項目などを設定できます<br>
+                追加・削除する場合は空白行のないようにしてください<br>
+                【未実装】とある項目は今後の実装を予定しています
+            </p>
+            <h3>チャットパレット</h3>
+            <table id="settingTable1">
+                <tbody>
+                    <tr>
+                        <th>チャットパレットの各行末尾に「\n」を記述</th>
+                        <td><input type="checkbox" name="checkIndent" id="checkIndent"></td>
+                    </tr>
+                    <tr>
+                        <th>チャットパレットに「コマンド」を追加【未実装】</th>
+                        <td><input type="checkbox" name="checkQuote" id="checkQuote"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>リスト追加</h3>
+            <table id="settingTable2">
+                <tbody>
+                    <tr>
+                        <th>種族リスト</th>
+                        <th>参照リスト</th>
+                        <th>弱点リスト</th>
+                        <th>魔法リスト</th>
+                    </tr>
+                    <tr>
+                        <td><textarea id="textCategory" rows="20"></textarea></td>
+                        <td><textarea id="textRefe" rows="20"></textarea></td>
+                        <td><textarea id="textWeak" rows="20"></textarea></td>
+                        <td><textarea id="textMagic" rows="20"></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" id="registerSetting">設定を上書き</button>
+        </div>
+        <div class="footer">
+            © 2024 魔物データベース. All rights reserved.
+        </div>
+    </div>
+</body>
+
+</html>
