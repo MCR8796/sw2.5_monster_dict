@@ -30,7 +30,7 @@
                 名称・分類・レベル・部位数の項目から魔物データを絞り込めます<br>
                 PC人数・コマの大きさ・チャットカラーによってコマの設定を行えます<br>
                 剣のかけらは生命・精神抵抗力への補正は自動計算されますが、HP・MPは適用されません<br>
-                コマは5部位から2つ、9部位から3つに分かれるので対応するコピーボタンを押してください
+                コマは5部位から2つ、9部位から3つに分かれるので対応する出力ボタンを押してください
             </p>
             <h2>検索設定</h2>
             <div>
@@ -119,7 +119,6 @@
             <h1>魔物登録</h1>
             <p>
                 魔物データの登録を行えます<br>
-                攻撃方法（部位）のみ書式が定まっています<br>
                 名前・分類・特殊能力の組み合わせが全く同じキャラクターの登録は非推奨です<br>
                 プルダウンの項目が不足した場合は、設定から追加してください
             </p>
@@ -135,23 +134,17 @@
                         <tr>
                             <th>分類</th>
                             <td colspan="1">
-                                <select id="registerCategory">
-                                    <option value="">未分類</option>
-                                </select>
+                                <select id="registerCategory"></select>
                             </td>
                             <th>参照</th>
                             <td colspan="2">
-                                <select id="registerRefe">
-                                    <option value="-">-</option>
-                                </select>
+                                <select id="registerRefe"></select>
                             </td>
                         </tr>
                         <tr>
                             <th>弱点</th>
                             <td colspan="1">
-                                <select id="registerWeak">
-                                    <option value="なし">なし</option>
-                                </select>
+                                <select id="registerWeak"></select>
                             </td>
                             <th colspan="2">知名度／弱点値</th>
                             <td colspan="1">
@@ -173,7 +166,7 @@
                         <tr>
                             <th>特殊能力</th>
                             <td colspan="5">
-                                <textarea id="registerSkill" rows="20" placeholder="例：●毒・病気無効" wrap="soft"></textarea>
+                                <textarea id="registerSkill" rows="10" placeholder="例：●毒・病気無効" wrap="soft"></textarea>
                             </td>
                         </tr>
                     </tbody>
@@ -195,23 +188,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input type="text" id="registerPart1Style" value="" placeholder="攻撃方法（部位）"></td>
-                            <td><input type="number" id="registerPart1Accuracy" value=0></td>
-                            <td><input type="number" id="registerPart1Damage" value=0></td>
-                            <td><input type="number" id="registerPart1Evasion" value=0></td>
-                            <td><input type="number" id="registerPart1Defense" value=0></td>
-                            <td><input type="number" id="registerPart1Hp" value=0></td>
-                            <td><input type="number" id="registerPart1Mp" value=0></td>
-                            <td></td>
-                            <td>
-                                <button class='clone-button' id="registerPart1Clone">複製</button>
-                                <button class='remove-button' id="registerPart1Remove">削除</button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
+                <button type="button" id="registerPartAdd">最下部に追加</button>
+                <button type="button" id="registerPartRemove">最下部を削除</button>
                 <button type="button" id="registerData">データを登録</button>
+                <br><br><button type="button" id="registerFormClear">フォームをクリア</button>
                 <input type="hidden" id="registerPartNum" value="1">
             </div>
         </div>
@@ -230,10 +212,6 @@
                     <tr>
                         <th>チャットパレットの各行末尾に「\n」を記述</th>
                         <td><input type="checkbox" name="checkIndent" id="checkIndent"></td>
-                    </tr>
-                    <tr>
-                        <th>チャットパレットに「コマンド」を追加【未実装】</th>
-                        <td><input type="checkbox" name="checkQuote" id="checkQuote"></td>
                     </tr>
                 </tbody>
             </table>
