@@ -93,6 +93,7 @@ def delete():
     for entry in data:
         if (entry['Name'] != item_dict['Name']) or \
             (entry['Category'] != item_dict['Category']) or \
+            (entry['Reference'] != item_dict['Reference']) or \
             (entry['Skill'] != item_dict['Skill']):
                 filtered_data.append(entry)
     
@@ -108,8 +109,18 @@ def register():
     # ロード
     data = load_data(path_dict)
     
-    # 新しいデータを追加
-    data.append(request.json)
+    new_item = request.json
+    item_name = new_item.get('Name')
+    
+    item_exists = False
+    for i, item in enumerate(data):
+        if item.get('Name') == item_name:
+            data[i] = new_item
+            item_exists = True
+            break
+    
+    if not item_exists:
+        data.append(new_item)
     
     # 書き込み
     with open(path_dict, 'w', encoding='utf-8') as file:
@@ -117,7 +128,7 @@ def register():
     
     return jsonify({"success": True})
 
-
+# 
 @app.route('/setting', methods=['GET', 'POST'])
 def get_settings():
     if request.method == 'GET':

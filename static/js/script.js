@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("searchPartNum").addEventListener("change", performSearch);
 
     // 検索結果ページのボタンが押された時
-    document.querySelector("#searchResult tbody").addEventListener('click', function (event) {
+    document.querySelector("#searchResult").addEventListener('click', function (event) {
         // コピーボタンの時
         if (event.target.classList.contains('copy-button')) {
             const item = JSON.parse(event.target.getAttribute('data-item'));
@@ -45,19 +45,21 @@ document.addEventListener("DOMContentLoaded", function () {
             const item = JSON.parse(event.target.getAttribute('data-item'));
             deleteRow(item);
         }
+        // 編集ボタンの時
+        else if (event.target.classList.contains('edit-button')) {
+            const item = JSON.parse(event.target.getAttribute('data-item'));
+            editRow(item);
+            document.getElementById("editOpen").click();
+        }
     });
 
-    // 魔物登録ページのフォームクリアボタンが押された時
-    document.getElementById('registerFormClear').addEventListener('click', formClear);
-
     // 魔物登録ページのボタンが押された時
-    document.querySelector("#registerForm2 tbody").addEventListener('click', function (event) {
+    document.querySelector("#registerForm2").addEventListener('click', function (event) {
         // 複製ボタンの時
         if (event.target.classList.contains('clone-button')) {
             const buttonId = event.target.id;
             const index = buttonId.replace('registerPart', '').replace('Clone', '');
             clonePart(index);
-    // 
         }
         // ↑↓ボタンの時
         else if (event.target.classList.contains('change-button')) {
@@ -71,19 +73,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 changePart(index, index + 1);
             }
         }
+        // 最下部に追加ボタンの時
+        else if (event.target.classList.contains('add-button')) {
+            addPart();
+        }
+        // 最下部を削除ボタンの時
+        else if (event.target.classList.contains('remove-button')) {
+            removePart();
+        }
+        // データを登録ボタンの時
+        else if (event.target.classList.contains('submit-button')) {
+            registerData();
+        }
+        // フォームをクリアボタンの時
+        else if (event.target.classList.contains('clear-button')) {
+            formClear();
+        }
     });
 
-    // 魔物登録ページの部位追加ボタンが押された時
-    document.getElementById('registerPartAdd').addEventListener('click', addPart);
-
-    // 魔物登録ページの部位削除ボタンが押された時
-    document.getElementById('registerPartRemove').addEventListener('click', removePart);
-    
-    // 魔物登録ページの魔物登録ボタンが押された時
-    document.getElementById('registerData').addEventListener('click', registerData);
-
     // 設定ページの設定上書きボタンが押された時
-    document.getElementById('registerSetting').addEventListener('click', updateSettings);
+    document.querySelector("#settingForm").addEventListener('click', function (event) {
+        // 設定上書きボタンが押された時
+        if (event.target.classList.contains('update-button')) {
+            updateSettings();
+        }
+    });
 });
 
 // 設定の読み込み・反映
@@ -151,7 +165,7 @@ function performSearch() {
             // 
             const filteredData = data.filtered_data;
             const memo = data.memo;
-            const tbody = document.querySelector("#searchResult tbody");
+            const tbody = document.querySelector("#searchResultsTable tbody");
             tbody.innerHTML = "";
             if (filteredData && filteredData.length) {
                 filteredData.forEach((item, index) => {
@@ -191,7 +205,8 @@ function generateRow(item, memo) {
         <td class="tooltip">${item.Name}<span class="tooltiptext">${memo.replace(/\n/g, '<br>')}</span></td>
         <td>${item.PartNum}</td>
         <td>${copyButton}</td>
-        <td><button class='delete-button' data-item='${JSON.stringify(item)}'>削除</button></td>
+        <td><button class='edit-button' data-item='${JSON.stringify(item)}'>編集</button>
+        <button class='delete-button' data-item='${JSON.stringify(item)}'>削除</button></td>
     `;
     return tr
 }
@@ -211,15 +226,52 @@ function copyRow(item, copy_type) {
 
 // 魔物登録ページ内容を削除する
 function deleteRow(item) {
-    const deleteParams = new URLSearchParams();
-    deleteParams.append('Item', JSON.stringify(item));
+    const confirmation = window.confirm("本当に削除しますか？");
+
+    if (confirmation) {
+        const deleteParams = new URLSearchParams();
+        deleteParams.append('Item', JSON.stringify(item));
+        // 
+        fetch(`/delete?${deleteParams.toString()}`)
+        .then(response => {
+            if(response.ok){
+                performSearch();
+            }
+        })
+    }
+}
+
+function editRow(item) {
     // 
-    fetch(`/delete?${deleteParams.toString()}`)
-    .then(response => {
-        if(response.ok){
-            performSearch();
-        }
-    })
+    formClear();
+    const table = document.getElementById("monsterInfoTable").querySelector("tbody");
+    const rowNum = table.querySelectorAll("tr").length;
+    for (let i = 0; i < rowNum; i++) {
+        removePart();
+    }
+    // 
+    const fields = ['Style', 'Accuracy', 'Damage', 'Evasion', 'Defense', 'Hp', 'Mp'];
+    for (let i = 0; i < item.PartNum; i++) {
+        addPart();
+        fields.forEach(field => {
+            const element = document.getElementById(`registerPart${i + 1}${field}`);
+            if (element) {
+                const propertyName = `Part${i + 1}${field}`;
+                element.value = item[propertyName];
+            }
+        });
+    }
+    document.getElementById("registerLevel").value = item.Level;
+    document.getElementById("registerName").value = item.Name;
+    document.getElementById("registerCategory").value = item.Category;
+    document.getElementById("registerRefe").value = item.Reference;
+    document.getElementById("registerWeak").value = item.Weakness;
+    document.getElementById("registerRepu1").value = item.Reputation1;
+    document.getElementById("registerRepu2").value = item.Reputation2;
+    document.getElementById("registerInit").value = item.Initiative;
+    document.getElementById("registerVitResi").value = item.VitResist;
+    document.getElementById("registerMndResi").value = item.MndResist;
+    document.getElementById("registerSkill").value = item.Skill;
 }
 
 // 魔物登録ページの魔物部位を複製する
@@ -234,11 +286,11 @@ function clonePart(index) {
     const Mp = document.querySelector(`#registerPart${index}Mp`).value;
 
     // 新しい行を作成する
-    const tbody = document.querySelector("#registerTable2 tbody");
+    const tbody = document.querySelector("#monsterAttributesTable tbody");
     const rowNum = tbody.querySelectorAll("tr").length;
     const tr = document.createElement("tr");
     tr.innerHTML = `
-        <td><input type="text" id="registerPart${rowNum + 1}Style" value="${Style}" placeholder="攻撃方法（部位）"></td>
+        <td><input type="text" id="registerPart${rowNum + 1}Style" value="${Style}" placeholder="攻撃方法（部位）" styleNum=1></td>
         <td><input type="number" id="registerPart${rowNum + 1}Accuracy" value="${Accuracy}"></td>
         <td>2d6+<input type="number" id="registerPart${rowNum + 1}Damage" value="${Damage}"></td>
         <td><input type="number" id="registerPart${rowNum + 1}Evasion" value="${Evasion}"></td>
@@ -263,7 +315,7 @@ function clonePart(index) {
 // 魔物登録ページの魔物部位を入れ替える
 function changePart(index1, index2) {
     const fields = ['Style', 'Accuracy', 'Damage', 'Evasion', 'Defense', 'Hp', 'Mp'];
-    const table = document.getElementById("registerTable2").querySelector("tbody");
+    const table = document.getElementById("monsterAttributesTable").querySelector("tbody");
     const rowNum = table.querySelectorAll("tr").length;
     if(rowNum > 1){
         fields.push('StyleAdd');
@@ -283,11 +335,11 @@ function changePart(index1, index2) {
 // 魔物登録ページの新しい魔物部位を最下部に作成する
 function addPart() {
     // 新しい行を作成する
-    const tbody = document.querySelector("#registerTable2 tbody");
+    const tbody = document.querySelector("#monsterAttributesTable tbody");
     const rowNum = tbody.querySelectorAll("tr").length;
     const tr = document.createElement("tr");
     tr.innerHTML = `
-        <td><input type="text" id="registerPart${rowNum + 1}Style" value="" placeholder="攻撃方法（部位）"></td>
+        <td><input type="text" id="registerPart${rowNum + 1}Style" value="" placeholder="攻撃方法（部位）" styleNum=1></td>
         <td><input type="number" id="registerPart${rowNum + 1}Accuracy" value=""></td>
         <td>2d6+<input type="number" id="registerPart${rowNum + 1}Damage" value=""></td>
         <td><input type="number" id="registerPart${rowNum + 1}Evasion" value=""></td>
@@ -307,7 +359,7 @@ function addPart() {
 
 // 魔物登録ページの最下部の魔物部位を削除する
 function removePart() {
-    const tr = document.getElementById("registerTable2").querySelector(`tbody tr:last-child`);
+    const tr = document.getElementById("monsterAttributesTable").querySelector(`tbody tr:last-child`);
     if (tr) {
         tr.remove();
         resetTable();
@@ -338,9 +390,9 @@ function resetTable(index){
 
 // 魔物登録ページの魔物部位の数を数える
 function updatePartNum() {
-    const table = document.getElementById("registerTable2").querySelector("tbody");
+    const table = document.getElementById("monsterAttributesTable").querySelector("tbody");
     const rowNum = table.querySelectorAll("tr").length;
-    document.getElementById("registerPartNum").value = rowNum;
+    document.getElementById("partCountHiddenInput").value = rowNum;
     // コア部位のチェックボックス
     if(rowNum > 1){
         addStyle()
@@ -353,7 +405,7 @@ function updatePartNum() {
 
 // 魔物登録ページの魔物部位で攻撃方法（部位）を分割する
 function addStyle() {
-    const table = document.getElementById("registerTable2").querySelector("tbody");
+    const table = document.getElementById("monsterAttributesTable").querySelector("tbody");
     table.querySelectorAll("tr").forEach((row, index) => {
         const styleCell = row.cells[0];
         // 
@@ -366,7 +418,7 @@ function addStyle() {
         if (!AddStyleCell) {
             const Style = StyleCell.querySelector('input').value || '';
             const StyleHTML = `<input type="text" id="registerPart${index + 1}Style" value="${Style}" placeholder="攻撃方法" styleNum=2>
-            （<input type="text" id="registerPart${index + 1}StyleAdd" value="" placeholder="部位" styleNum=2>）
+            (<input type="text" id="registerPart${index + 1}StyleAdd" value="" placeholder="部位" styleNum=2>)
             `;
             StyleCell.innerHTML = StyleHTML;
         }
@@ -375,7 +427,7 @@ function addStyle() {
 
 // 魔物登録ページの魔物部位で攻撃方法（部位）に統合する
 function removeStyle() {
-    const table = document.getElementById("registerTable2").querySelector("tbody");
+    const table = document.getElementById("monsterAttributesTable").querySelector("tbody");
     table.querySelectorAll("tr").forEach((row, index) => {
         const styleCell = row.cells[0];
         // 
@@ -397,7 +449,7 @@ function removeStyle() {
 
 // 魔物登録ページの魔物部位にコア部位のチェックボックスを追加する
 function addCoreCheckbox() {
-    const table = document.getElementById("registerTable2").querySelector("tbody");
+    const table = document.getElementById("monsterAttributesTable").querySelector("tbody");
     table.querySelectorAll("tr").forEach((row, index) => {
         // 
         const coreCell = row.cells[7];
@@ -410,7 +462,7 @@ function addCoreCheckbox() {
 
 // 魔物登録ページの魔物部位のコア部位のチェックボックスを削除する
 function removeCoreCheckbox() {
-    const table = document.getElementById("registerTable2").querySelector("tbody");
+    const table = document.getElementById("monsterAttributesTable").querySelector("tbody");
     table.querySelectorAll("tr").forEach(row => {
         // 
         const coreCell = row.cells[7];
@@ -436,7 +488,7 @@ function registerData() {
         "VitResist": parseInt(document.querySelector("#registerVitResi").value) || 0,
         "MndResist": parseInt(document.querySelector("#registerMndResi").value) || 0,
         "Skill": document.querySelector("#registerSkill").value || '',
-        "PartNum": parseInt(document.querySelector("#registerPartNum").value) || 0,
+        "PartNum": parseInt(document.querySelector("#partCountHiddenInput").value) || 0,
     };
     // 各部位
     const PartNum = data.PartNum;
@@ -477,7 +529,7 @@ function registerData() {
 // 魔物登録ページに入力された内容をリセットする
 function formClear() {
     const fields = ['Style', 'Accuracy', 'Damage', 'Evasion', 'Defense', 'Hp', 'Mp'];
-    const table = document.getElementById("registerTable2").querySelector("tbody");
+    const table = document.getElementById("monsterInfoTable").querySelector("tbody");
     const rows = table.querySelectorAll("tr");
     // rowNum の計算
     const rowNum = rows.length;

@@ -19,8 +19,8 @@
         <!-- タブ関連の部分 -->
         <div class="tabs">
             <button class="tablinks" onclick="openTab(event, 'search')" id="defaultOpen">検索</button>
-            <button class="tablinks" onclick="openTab(event, 'register')">登録</button>
-            <button class="tablinks" onclick="openTab(event, 'setting')" id="defaultSetting">設定</button>
+            <button class="tablinks" onclick="openTab(event, 'register')" id="editOpen">登録</button>
+            <button class="tablinks" onclick="openTab(event, 'setting')">設定</button>
         </div>
 
         <!-- 魔物検索 -->
@@ -38,7 +38,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <table id="searchTable1">
+                                <table id="searchFiltersTable">
                                     <tbody>
                                         <tr>
                                             <th>名称</th>
@@ -62,7 +62,7 @@
                                 </table>
                             </td>
                             <td>
-                                <table id="partyTable">
+                                <table id="partySettingsTable">
                                     <tbody>
                                         <tr>
                                             <th>PC人数</th>
@@ -85,7 +85,7 @@
             </div>
             <h2>検索結果</h2>
             <div id="swordForm">
-                <table id="searchTable3">
+                <table id="swordFragmentSettingsTable">
                     <tbody>
                         <tr>
                             <th>剣のかけら</th>
@@ -97,7 +97,7 @@
                 </table>
             </div>
             <div id="searchResult">
-                <table id="searchTable2">
+                <table id="searchResultsTable">
                     <thead>
                         <tr>
                             <th>分類</th>
@@ -105,7 +105,7 @@
                             <th>名称</th>
                             <th>部位数</th>
                             <th>コピー</th>
-                            <th>削除</th>
+                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -119,11 +119,11 @@
             <h1>魔物登録</h1>
             <p>
                 魔物データの登録を行えます<br>
-                名前・分類・特殊能力の組み合わせが全く同じキャラクターの登録は非推奨です<br>
+                名前が同じキャラクターは上書きされます<br>
                 プルダウンの項目が不足した場合は、設定から追加してください
             </p>
             <div id="registerForm1">
-                <table id="registerTable1">
+                <table id="monsterInfoTable">
                     <tbody>
                         <tr>
                             <th>レベル</th>
@@ -173,7 +173,7 @@
                 </table>
             </div>
             <div id="registerForm2">
-                <table id="registerTable2">
+                <table id="monsterAttributesTable">
                     <thead>
                         <tr>
                             <th>攻撃方法（部位）</th>
@@ -190,11 +190,11 @@
                     <tbody>
                     </tbody>
                 </table>
-                <button type="button" id="registerPartAdd">最下部に追加</button>
-                <button type="button" id="registerPartRemove">最下部を削除</button>
-                <button type="button" id="registerData">データを登録</button>
-                <br><br><button type="button" id="registerFormClear">フォームをクリア</button>
-                <input type="hidden" id="registerPartNum" value="1">
+                <button type="button" class="add-button">最下部に追加</button>
+                <button type="button" class="remove-button">最下部を削除</button>
+                <button type="button" class="submit-button">データを登録</button>
+                <br><br><button type="button" class="clear-button">フォームをクリア</button>
+                <input type="hidden" id="partCountHiddenInput" value="0">
             </div>
         </div>
 
@@ -203,36 +203,37 @@
             <h1>設定</h1>
             <p>
                 プルダウンの項目などを設定できます<br>
-                追加・削除する場合は空白行のないようにしてください<br>
-                【未実装】とある項目は今後の実装を予定しています
+                追加・削除する場合は空白行のないようにしてください
             </p>
-            <h3>チャットパレット</h3>
-            <table id="settingTable1">
-                <tbody>
-                    <tr>
-                        <th>チャットパレットの各行末尾に「\n」を記述</th>
-                        <td><input type="checkbox" name="checkIndent" id="checkIndent"></td>
-                    </tr>
-                </tbody>
-            </table>
-            <h3>リスト追加</h3>
-            <table id="settingTable2">
-                <tbody>
-                    <tr>
-                        <th>種族リスト</th>
-                        <th>参照リスト</th>
-                        <th>弱点リスト</th>
-                        <th>魔法リスト</th>
-                    </tr>
-                    <tr>
-                        <td><textarea id="textCategory" rows="20"></textarea></td>
-                        <td><textarea id="textRefe" rows="20"></textarea></td>
-                        <td><textarea id="textWeak" rows="20"></textarea></td>
-                        <td><textarea id="textMagic" rows="20"></textarea></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button type="button" id="registerSetting">設定を上書き</button>
+            <div id="settingForm">
+                <h3>チャットパレット</h3>
+                <table id="chatPaletteSettingsTable">
+                    <tbody>
+                        <tr>
+                            <th>チャットパレットの各行末尾に「\n」を記述</th>
+                            <td><input type="checkbox" name="checkIndent" id="checkIndent"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3>リスト追加</h3>
+                <table id="listSettingsTable">
+                    <tbody>
+                        <tr>
+                            <th>種族リスト</th>
+                            <th>参照リスト</th>
+                            <th>弱点リスト</th>
+                            <th>魔法リスト</th>
+                        </tr>
+                        <tr>
+                            <td><textarea id="textCategory" rows="20"></textarea></td>
+                            <td><textarea id="textRefe" rows="20"></textarea></td>
+                            <td><textarea id="textWeak" rows="20"></textarea></td>
+                            <td><textarea id="textMagic" rows="20"></textarea></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="update-button">設定を上書き</button>
+            </div>
         </div>
         <div class="footer">
             © 2024 魔物データベース. All rights reserved.

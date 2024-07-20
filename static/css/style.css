@@ -1,8 +1,8 @@
-/* body: ページ全体の背景色、フォント、テキスト色 */
+/* body: ページ全体のスタイル */
 body {
     font-family: 'Whitney', sans-serif;
     background-color: #36393f;
-    color: #dcddde;
+    color: #ffffff;
     line-height: 1.6;
 }
 
@@ -19,74 +19,21 @@ body {
 .header,
 .footer {
     background: #292b2f;
-    color: #fff;
     padding: 20px 0;
     text-align: center;
 }
 
-/* button: ボタンのスタイル */
-button {
-    background-color: #7289da;
-    color: #ffffff;
-    padding: 4px 4px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-/* button:hover: ホバー時のボタンの背景色 */
-button:hover {
-    background-color: #677bc4;
-}
-
-.toolltip {
-    position: relative;
-    display: inline-block;
-}
-
-.tooltiptext {
-    font-size: 12px;
-    visibility: hidden;
-    background-color: #1f1f1f;
-    color: #fff;
-    text-align: left;
-    padding: 5px 5px;
-    position: absolute;
-    z-index: 1;
-    opacity: 0;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* a: リンクのスタイル */
-a {
-    color: #7289da;
-    text-decoration: none;
-}
-/* a:hover: ホバー時に下線を追加 */
-a:hover {
-    text-decoration: underline;
-}
-
-/* .tabs: タブメニューの背景色 */
+/* .tabs: タブメニューのスタイル */
 .tabs {
     overflow: hidden;
-    background-color: #333;
 }
-/* .tablinks: 各タブボタンのスタイル */
+
 .tablinks {
     background-color: #555;
-    color: white;
     float: left;
-    border: none;
-    outline: none;
-    cursor: pointer;
     padding: 14px 16px;
     font-size: 17px;
-    width: 33%;
+    width: 33.3%;
 }
 
 .tabcontent {
@@ -96,99 +43,145 @@ a:hover {
     border-top: none;
 }
 
-/* table: テーブル全体のスタイル */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 0px;
+/* button: ボタンのスタイル */
+button {
+    background-color: #7289da;
+    color: #ffffff;
+    padding: 4px 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 16px;
+}
+button:hover {
+    background-color: #4d4398;
 }
 
-/* th, td: テーブルセルのスタイル */
+/* table: テーブル全体のスタイル */
+table {
+    border: 2px solid #444;
+    border-collapse: collapse;
+}
 th, td {
-    padding: 8px;
+    padding: 8px; 
     text-align: center;
-    background-color: #292b2f;
-    color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 th {
     background-color: #444;
-    font-weight: bold;
+    font-weight: bold; 
+    white-space: nowrap;
 }
 td {
+    white-space: normal;
     background-color: #36393f;
 }
 
-input[type="number"]{
-    text-align: center;
-    width: 50px;
+/* 削除ボタン、フォームをクリアボタンのスタイル */
+.delete-button, .clear-button {
+    background-color: #ea5550;
+}
+.delete-button:hover, .clear-button:hover {
+    background-color: #6a1917;
 }
 
-input[type="text"], textarea{
+/* tooltip: ツールチップのスタイル */
+.tooltip {
+    position: relative;
+}
+
+.tooltiptext {
+    font-size: 12px;
+    visibility: hidden;
+    background-color: #1f1f1f;
+    color: #ffffff;
     text-align: left;
+    padding: 5px 5px;
+    position: absolute;
+    z-index: 1;
+    opacity: 0;
+    bottom: 100%;
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 検索 */
+#formTable {
+    width: 70%;
+    border: none;
+}
+#searchFiltersTable,
+#partySettingsTable {
     width: 100%;
-    padding: 5px;
-    margin: 5px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-    overflow: auto;
-    text-overflow: clip;
+}
+#searchResultsTable {
+    width: 100%;
+    margin-top: 10px;
+}
+#searchName {
+    width: 300px;
+}
+#searchCategory, #searchLevel, #searchPartNum {
+    width: 70px;
+}
+#PartyNum, #CharaSize, #ChatColor {
+    width: 70px;
 }
 
-#formTable td {
-    vertical-align: top;
-}
-
-#searchTable2, #registerTable2{
-    margin-top: 10px
-}
-
-#searchTable3, #settingTable1{
-    width: 45%;
-}
-
-#searchTable1, #searchTable2, #searchTable3, #partyTable, #registerTable1, #registerTable2, #settingTable1, #settingTable2{
-    border: 1px solid #444;
-    border-collapse: collapse;
-}
-
-#searchTable1 th, #searchTable1 td,
-#searchTable2 th, #searchTable2 td,
-#searchTable3 th, #searchTable3 td,
-#partyTable th, #partyTable td,
-#registerTable1 th, #registerTable1 td,
-#registerTable2 th, #registerTable2 td,
-#settingTable1 th, #settingTable1 td,
-#settingTable2 th, #settingTable2 td {
-    border: 1px solid #444; /* ボーダーの設定 */
-    padding: 8px; /* セルの内側の余白 */
-    text-align: center; /* テキストの中央揃え */
-}
-
-#registerTable1{
+/* 登録 */
+#monsterInfoTable {
     width: 70%;
 }
-
-.part-row td {
+#monsterAttributesTable {
+    width: 100%;
+    margin-top: 10px;
+}
+#registerLevel, 
+#registerRepu1, #registerRepu2, 
+#registerInit, 
+#registerVitResi, #registerMndResi {
+    width: 80px;
     text-align: center;
 }
-
-#formTable {
-    border: none; /* 枠線をなしにする */
+#registerCategory, 
+#registerWeak {
+    width: 100px;
+}
+#registerName, #registerRefe {
+    width: 220px;
+}
+#registerSkill {
+    width: 550px;
+}
+input[id$="Accuracy"], 
+input[id$="Evasion"], input[id$="Defense"], 
+input[id$="Hp"], input[id$="Mp"] {
+    width: 45px;
+}
+input[id$="Damage"] {
+    width :45px
+}
+/* 1部位の時の攻撃方法（部位） */
+input[id$="Style"][styleNum="1"] {
+    width: 200px;
+}
+/* 2部位以上の時の攻撃方法と部位 */
+input[id$="Style"][styleNum="2"] {
+    width: 100px;
+}
+input[id$="StyleAdd"][styleNum="2"] {
+    width: 70px;
 }
 
-input[type="text"][id^="registerPart"][id$="Style"][styleNum="1"] {
+/* 設定 */
+#listSettingsTable {
     width: 100%;
 }
-
-input[type="text"][id^="registerPart"][id$="Style"][styleNum="2"],
-input[type="text"][id^="registerPart"][id$="StyleAdd"][styleNum="2"] {
-    width: 40%;
-}
-
-input[type="number"][id^="registerPart"]{
-    width: 40px;
+#textCategory, #textRefe, #textWeak, #textMagic {
+    width: 90%;
 }
